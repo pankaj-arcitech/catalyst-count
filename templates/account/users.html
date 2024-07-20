@@ -3,13 +3,7 @@
 {% block content %}
 <div class="container">
     <h2>Users</h2>
-    <button class="btn btn-primary btn-sm">Add User</button>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong><i class="bi bi-check-circle-fill"></i></strong> New user added
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+    <div class="alert" id="message" role="alert" style="display: none;"></div>
     <table class="table">
         <thead>
             <tr>
@@ -21,12 +15,12 @@
         </thead>
         <tbody>
             {% for user in users %}
-            <tr>
+            <tr id="user-{{ user.id }}">
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
-                <td>Active</td>
+                <td>{% if user.is_active %} Active {% else %} Deactive {% endif %}</td>
                 <td>
-                    <button class="btn btn-danger btn-sm"><i class="bi bi-x-circle-fill"></i>Remove</button>
+                    <a class="btn btn-danger btn-sm delete-btn" href="{% url 'deleteUser' user.id %}">Delete</a>
                 </td>
             </tr>
             {% endfor %}

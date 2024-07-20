@@ -1,3 +1,8 @@
 from django.contrib import admin
+from import_export.admin import ImportExportActionModelAdmin
+from .models import CatalystCount
 
 # Register your models here.
+@admin.register(CatalystCount)
+class CatalystCountAdmin(ImportExportActionModelAdmin):
+    list_display = ('id', 'name', 'domain', 'year_founded')
