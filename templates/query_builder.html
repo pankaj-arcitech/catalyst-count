@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Query Builder</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% comment %} {{ form.as_p }} {% endcomment %}
+        <div>
+            <input type="input" name="keyword" placeholder="keyword">
+            <input type="input" name="indutry" placeholder="Indutry">
+        </div>
+        <div class="mt-2">
+        <button type="submit" class="btn btn-primary btn-sm">Query Data</button><button type="reset" class="btn btn-sm ms-2">Reset</button>
+        </div>
+    </form>
+    {% if results %}
+    <h3>Results</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                {% for col in results.0 %}
+                <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in results %}
+            <tr>
+                {% for col in row %}
+                <td>{{ col }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}
+
+
