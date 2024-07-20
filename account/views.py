@@ -38,8 +38,9 @@ def upload_data(request):
             # Process the uploaded file
             dataset = new_catalyst.read().decode('utf-8').splitlines()
             reader = csv.DictReader(dataset)
-
+            i = 0
             for data in reader:
+                print(i)
                 CatalystCount.objects.update_or_create(
                     name=data['name'],
                     domain=data['domain'],
@@ -51,7 +52,10 @@ def upload_data(request):
                     employees_from = data['current employee estimate'],
                     employees_to = data['total employee estimate'],
                 )
-
+                if i > 1000:
+                    break
+                i += 1
+            print("out of loop")
             messages.success(request, 'File uploaded and processed successfully.')
             return render(request, 'upload_data.html')
     else:
@@ -64,8 +68,6 @@ class QueryBuilderAPIView(APIView):
         form = QueryBuilderForm(request.GET)
         if form.is_valid():
             queryset = CatalystCount.objects.all()
-            a = form.cleaned_data['employees_from']
-            print( a, type(a), int(a))
             if form.cleaned_data['keyword']:
                 queryset = queryset.filter(name__icontains=form.cleaned_data['keyword'])
             if form.cleaned_data['industry']:
