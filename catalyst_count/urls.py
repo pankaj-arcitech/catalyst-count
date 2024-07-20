@@ -23,6 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls') ),
 
+
+    path('users/', views.user_list, name='user_list'),
+    path('users/delete/<int:user_id>/', views.delete_user, name='delete_user'),
+
     path("users/", views.users , name='users'),
     path("users/delete/<int:user_id>/", views.deleteUser , name='deleteUser'),
     path('upload/', views.upload_data, name='upload_data'),

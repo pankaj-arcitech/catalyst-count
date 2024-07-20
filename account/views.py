@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
 from account.models import CatalystCount
-from .forms import QueryBuilderForm, UploadFileForm
+from .forms import QueryBuilderForm, UploadFileForm, UserForm
 from django.db import connection
 from .resources import CatalystCountResources
 from tablib import Dataset
@@ -15,6 +15,30 @@ from django.views.decorators.http import require_http_methods
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+
+def user_list(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            messages.success(request, 'New user added successfully.')
+            return redirect('user_list')
+    else:
+        form = UserForm()
+    
+    users = User.objects.all()
+    return render(request, 'account/users.html', {'users': users, 'form': form})
+
+
+def delete_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    user.delete()
+    messages.success(request, 'User deleted successfully.')
+    return redirect('user_list')
+
 
 def users(request):
     user_list = User.objects.all()
