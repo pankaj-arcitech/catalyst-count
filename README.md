@@ -16,12 +16,12 @@ cd catalyst-count
 
 2. Create a virtual environment
 ```
-python -m venv venv
+python -m venv catalyst-count-env
 
 ```
 3. Activate virtual environment
 ```
-command - .\venv\Scripts\activate
+command - .\catalyst-count-env\Scripts\activate
 ```
 4. Install packages from requirements file
 ```
@@ -51,7 +51,8 @@ Password: 123
 
 ### Basic Detials
 
-1. Django All-auth interegration Done
-2. Query Data set Retrive from DB Done
-3. User CRUD functionality Done
-4. Upload CSV File data Done but I am trying to show in progress bar
+1. Django All-auth interegration :+1:
+2. Design Login Page as per given :+1:
+3. Users CRUD functionality :+1:
+4. Upload CSV File data in database but I am trying to show in progress bar :+1:
+5. Query Data count Retrive from database and show in bootstrap alert box :+1:
