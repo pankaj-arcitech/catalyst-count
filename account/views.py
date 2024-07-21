@@ -50,16 +50,15 @@ def deleteUser(request, user_id):
     user.delete()
     return JsonResponse({'success': True})
 
+
 def upload_data(request):
     if request.method == 'POST':
         new_catalyst = request.FILES['file']
         form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            if not new_catalyst.name.endswith('.csv'):
+        if not new_catalyst.name.endswith('.csv'):
                 messages.info(request, 'Please upload a CSV file.')
                 return render(request, 'upload_data.html', {'form': form})
-
-            # Process the uploaded file
+        if form.is_valid():
             dataset = new_catalyst.read().decode('utf-8').splitlines()
             reader = csv.DictReader(dataset)
             i = 0
@@ -76,8 +75,8 @@ def upload_data(request):
                     employees_from = data['current employee estimate'],
                     employees_to = data['total employee estimate'],
                 )
-                if i > 1000:
-                    break
+                # if i > 1000:
+                #     break
                 i += 1
             print("out of loop")
             messages.success(request, 'File uploaded and processed successfully.')
@@ -85,7 +84,6 @@ def upload_data(request):
     else:
         form = UploadFileForm()
     return render(request, 'upload_data.html', {'form': form})
-
 
 class QueryBuilderAPIView(APIView):
     def get(self, request):

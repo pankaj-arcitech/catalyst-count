@@ -17,20 +17,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from django.contrib.auth import views as auth_views
 from account import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls') ),
 
-
     path('users/', views.user_list, name='user_list'),
     path('users/delete/<int:user_id>/', views.delete_user, name='delete_user'),
 
     path("users/", views.users , name='users'),
     path("users/delete/<int:user_id>/", views.deleteUser , name='deleteUser'),
+
     path('upload/', views.upload_data, name='upload_data'),
     path('query/', views.query_builder, name='query_builder'),
-
     path('api/query/', views.QueryBuilderAPIView.as_view(), name='query-builder-api'),
 ]
