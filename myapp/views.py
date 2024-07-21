@@ -2,10 +2,9 @@ import csv
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 
-from account.models import CatalystCount
+from myapp.models import CatalystCount
 from .forms import QueryBuilderForm, UploadFileForm, UserForm
 from django.db import connection
-from .resources import CatalystCountResources
 from tablib import Dataset
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
@@ -38,17 +37,6 @@ def delete_user(request, user_id):
     user.delete()
     messages.success(request, 'User deleted successfully.')
     return redirect('user_list')
-
-
-def users(request):
-    user_list = User.objects.all()
-    return render(request, 'account/users.html', {'users': user_list})
-
-def deleteUser(request, user_id):
-    print(user_id, "id")
-    user = get_object_or_404(User, id=user_id)
-    user.delete()
-    return JsonResponse({'success': True})
 
 
 def upload_data(request):
