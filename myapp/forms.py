@@ -4,6 +4,8 @@ from django import forms
 from django import forms
 from django.contrib.auth.models import User
 
+from myapp.models import UploadedFile
+
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
@@ -12,8 +14,10 @@ class UserForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
 
-class UploadFileForm(forms.Form):
-    file = forms.FileField()
+class UploadFileForm(forms.ModelForm):
+    class Meta:
+        model = UploadedFile
+        fields = ['file'] 
 
 class QueryBuilderForm(forms.Form):
     keyword = forms.CharField(required=False)

@@ -15,29 +15,43 @@
         <div class="col-md-6">
         <div class="card ">
         <div class="card-header">
-        <h4>Login to continue</h4>
+        <h4>Signup to continue</h4>
         </div>
         <div class="card-body">
-            {% if form.non_field_errors %}
+            {% if form.errors %}
                 <div class="alert alert-danger">
-                    {% for error in form.non_field_errors %}
-                        <p>{{ error }}</p>
+                    {% for field in form %}
+                        <p>{{ field.errors }}</p>
+                    {% endfor %}
+                    {% for ferror in form.non_field_errors %}
+                        <p> {{ ferror }}</p>
                     {% endfor %}
                 </div>
             {% endif %}
         <form method="post">
             {% csrf_token %}
             <div class="input-group mb-3">
-                <input class="form-control" type="text" name="login" placeholder="Username" autocomplete="username" maxlength="150" required="" id="id_login" >
+                <input  class="form-control" type="text" name="username" placeholder="Username" autocomplete="username" minlength="1" maxlength="150" required="" id="id_username">
+            </div>
+            <div class="input-group mb-3">
+                <input class="form-control" type="email" name="email" placeholder="Email address (Optional)" autocomplete="email" maxlength="320" id="id_email">           
             </div>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">#</span>
-                </div>
-                <input type="password" class="form-control"  name="password" placeholder="Password" autocomplete="current-password" required=""  aria-describedby="basic-addon1">
-                <button type="submit" class="btn btn-primary btn-sm btn-block mt-4">Login</button>
-                <p class=""> <a href="/accounts/signup/" >signup </a></p>
+                    <span class="input-group-text" id="basic-addon1">#</span>
+                  </div>
+                <input class="form-control"  type="password" name="password1" placeholder="Password" autocomplete="new-password" required="" id="id_password1">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon2">#</span>
+                  </div>
+                <input class="form-control" type="password" name="password2" placeholder="Password (again)" autocomplete="new-password" required="" id="id_password2">
+            </div>
+            <div class="input-group mb-3">
+                <button type="submit" class="btn btn-primary btn-sm btn-block mt-4">Signup</button>
               </div>
+              <a href="/accounts/login/" >Login </a>
             </div>
         </form>
         </div>

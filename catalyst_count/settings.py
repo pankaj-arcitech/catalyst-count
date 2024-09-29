@@ -123,3 +123,16 @@ ACCOUNT_EMAIL_REQUIRED = False
 LOGIN_REDIRECT_URL = '/users/'
 LOGIN_URL = '/accounts/login/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'  
+
+# CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 3,
+        },
+    },
+]

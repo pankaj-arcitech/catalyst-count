@@ -16,8 +16,9 @@
         {% csrf_token %}
         <div class="input-group mb-3">
             <div class="custom-file">
+                <input type="hidden" name="client_id" value={{client_id}}>
                 <input type="file" class="custom-file-input" id="inputGroupFile01" name="file" aria-describedby="inputGroupFileAddon01">
-                <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                <label class="custom-file-label" for="inputGroupFile">Choose file</label>
             </div>
         </div>
         <button type="submit" class="btn btn-primary btn-sm">Start Upload</button>
@@ -25,7 +26,7 @@
     <div class="mt-3">
         <h3>Upload Progress</h3>
         <div class="progress mt-1">
-            <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" id="progress-bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+            <div class="progress-bar bg-success" role="progressbar" id="progress-bar" style="width: 0%;" id="progress-bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
         </div>
     </div>
 </div>
@@ -34,5 +35,33 @@
         var fileName = this.value.split('\\').pop();
         this.nextElementSibling.innerHTML = fileName;
     });
+
+    const clientId = "{{client_id}}";  // This would typically be a user ID or session ID.
+
+    const socket = new WebSocket('ws://localhost:8765');
+
+    socket.onopen = function(e) {
+        // Send the client ID to the server when the connection opens
+        socket.send(JSON.stringify({ 'client_id': clientId }));
+        console.log('WebSocket connected with client ID:', clientId);
+    };
+
+    socket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        console.log('Message from server:', data);
+        if(data.progress_percentage){
+            let percentage = Math.round(data.progress_percentage);
+            document.getElementById("progress-bar").style.width = percentage.toString() + "%";
+            document.getElementById("progress-bar").innerHTML = percentage.toString() + "%";
+        }
+       
+    };
+
+    socket.onclose = function(e) {
+        console.error('WebSocket closed unexpectedly');
+    };
 </script>
 {% endblock %}
+chunk = file.read(chunk_size)
+            if not chunk:
+                break
