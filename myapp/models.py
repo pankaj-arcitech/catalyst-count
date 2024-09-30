@@ -11,6 +11,10 @@ class CatalystCount(models.Model):
     linkedin_url = models.CharField(("linkedin url"), max_length=250, null=True, blank=True)
     employees_from = models.CharField(("employees_from"), max_length=250, null=True, blank=True,  db_index=True)
     employees_to = models.CharField(("employees_to"), max_length=250, null=True, blank=True,  db_index=True)
+    
+    class meta:
+        verbose_name = ("Catalyst Count")
+        verbose_name_plural = ("Catalyst Counts")
 
 
 class UploadedFile(models.Model):
@@ -20,3 +24,7 @@ class UploadedFile(models.Model):
 
     def __str__(self):
         return self.file.name
+    
+    class meta:
+        verbose_name = ("Uploaded File")
+        verbose_name_plural = ("Uploaded Files")

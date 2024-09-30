@@ -1,12 +1,8 @@
-import csv
-import json
-from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 
-from catalyst_count.tasks import load_my_file, test_task
+from catalyst_count.tasks import load_my_file
 from myapp.models import CatalystCount
-from myapp.ws_client import send_message_view
 from .forms import QueryBuilderForm, UploadFileForm, UserForm
 from django.db import connection
 from django.contrib import messages
@@ -15,9 +11,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 import uuid
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 @login_required
 def user_list(request):
+    """list of users and user creation."""
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
@@ -32,20 +30,24 @@ def user_list(request):
     users = User.objects.all()
     return render(request, 'account/users.html', {'users': users, 'form': form})
 
-
 @login_required
 def delete_user(request, user_id):
-    user = User.objects.get(pk=user_id)
+    """Delete a user by their ID."""
+    user = get_object_or_404(User, pk=user_id)
     user.delete()
     messages.success(request, 'User deleted successfully.')
     return redirect('user_list')
 
+def account_logout(request):
+    """Log out the user and redirect to the login page."""
+    logout(request)
+    return redirect('/accounts/login')
+
 
 @login_required
-def upload_data(request):
-    client_id = uuid.uuid4()
-    client_id = str(client_id)
-    if request.method == 'POST' :  # and 'csvfile' in request.FILES
+def upload_data_view(request):
+    client_id = str(uuid.uuid4())
+    if request.method == 'POST' :  
         new_catalyst = request.FILES['file']
         client_id = request.POST.get("client_id")
         if not new_catalyst.name.endswith('.csv') or not new_catalyst:
@@ -54,7 +56,6 @@ def upload_data(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_file = form.save()
-            print("before hit redis")
             load_my_file.delay(uploaded_file.id, client_id)
 
             messages.success(request, 'File uploaded and processed successfully.')
@@ -65,46 +66,40 @@ def upload_data(request):
     return render(request, 'upload_data.html', {'form': form, 'client_id':client_id })
 
 
-from django.contrib.auth import logout
-
-def logout_view(request):
-    logout(request)
-    return redirect('/accounts/login')
-
-@login_required
 class QueryBuilderAPIView(APIView):
+    """API view to handle query building"""
+
     def get(self, request):
         form = QueryBuilderForm(request.GET)
         if form.is_valid():
-            queryset = CatalystCount.objects.all()
-            if form.cleaned_data['keyword']:
-                queryset = queryset.filter(name__icontains=form.cleaned_data['keyword'])
-            if form.cleaned_data['industry']:
-                queryset = queryset.filter(industry__icontains=form.cleaned_data['industry'])
-            if form.cleaned_data['year_founded']:
-                queryset = queryset.filter(year_founded=form.cleaned_data['year_founded'])
-            if form.cleaned_data['city']:
-                queryset = queryset.filter(locality__icontains=form.cleaned_data['city'])
-            if form.cleaned_data['state']:
-                queryset = queryset.filter(locality__icontains=form.cleaned_data['state'])
-            if form.cleaned_data['country']:
-                queryset = queryset.filter(country__icontains=form.cleaned_data['country'])
-            if form.cleaned_data['employees_from']:
-                queryset = queryset.filter(employees_from__gte=form.cleaned_data['employees_from'])
-            if form.cleaned_data['employees_to']:
-                queryset = queryset.filter(employees_to__lte=form.cleaned_data['employees_to'])
-            
+            queryset = self._filter_queryset(form)
             count = queryset.count()
             return Response({'count': count})
+        
         return Response({'error': 'Invalid query'}, status=400)
 
+    def _filter_queryset(self, form):
+        """Filter the queryset based on the valid form data."""
+        queryset = CatalystCount.objects.all()
+        
+        filters = {
+            'name__icontains': form.cleaned_data.get('keyword'),
+            'industry__icontains': form.cleaned_data.get('industry'),
+            'year_founded': form.cleaned_data.get('year_founded'),
+            'locality__icontains': form.cleaned_data.get('city'),
+            'locality__icontains': form.cleaned_data.get('state'),
+            'country__icontains': form.cleaned_data.get('country'),
+            'employees_from__gte': form.cleaned_data.get('employees_from'),
+            'employees_to__lte': form.cleaned_data.get('employees_to'),
+        }
+        
+        for filter_key, filter_value in filters.items():
+            if filter_value:
+                queryset = queryset.filter(**{filter_key: filter_value})
+        
+        return queryset
 
 @login_required
-def query_builder(request):
+def query_builder_view(request):
+    """Render the query builder page."""
     return render(request, 'query_builder.html')
-
-
-def test(request):
-    id  = request.GET.get("id")
-    send_message_view(id,"this is msg")
-    return HttpResponse("Hello, world. You're at the polls index.")

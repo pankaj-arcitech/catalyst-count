@@ -1,9 +1,5 @@
 from django import forms
-
-
-from django import forms
 from django.contrib.auth.models import User
-
 from myapp.models import UploadedFile
 
 class UserForm(forms.ModelForm):
@@ -28,9 +24,3 @@ class QueryBuilderForm(forms.Form):
     country = forms.CharField(required=False)
     employees_from = forms.IntegerField(required=False)
     employees_to = forms.IntegerField(required=False)
-
-
-# class QueryBuilderForm(forms.ModelForm):
-#     class Meta:
-#         model = CatalystCount
-#         fields = '__all__'

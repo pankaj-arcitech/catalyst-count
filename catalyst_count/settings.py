@@ -9,7 +9,6 @@ ENV_FILE = '.env'
 if os.path.exists(ENV_FILE):
     load_dotenv(dotenv_path=ENV_FILE)
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = os.getenv('DEBUG', False)
@@ -17,7 +16,7 @@ DEBUG = os.getenv('DEBUG', False)
 SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 
 # Allowed hosts
-ALLOWED_HOSTS = ['*']  # Adjust as per your deployment environment
+ALLOWED_HOSTS = ['*'] 
 
 
 # Application definition
@@ -30,12 +29,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # install packages
     'allauth',
     'allauth.account',
     'import_export',
     'rest_framework',
 
-    'myapp',
+    # applications
+    'myapp.apps.MyappConfig',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +125,7 @@ LOGIN_REDIRECT_URL = '/users/'
 LOGIN_URL = '/accounts/login/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'  
 
-# CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+# Celery settings
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 
 

@@ -15,7 +15,7 @@
         <div class="col-md-6">
         <div class="card ">
         <div class="card-header">
-        <h4>Signup to continue</h4>
+        <h4>Register to continue</h4>
         </div>
         <div class="card-body">
             {% if form.errors %}
@@ -42,16 +42,16 @@
                   </div>
                 <input class="form-control"  type="password" name="password1" placeholder="Password" autocomplete="new-password" required="" id="id_password1">
             </div>
-            <div class="input-group mb-3">
+            <div class="input-group mb-1">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon2">#</span>
                   </div>
                 <input class="form-control" type="password" name="password2" placeholder="Password (again)" autocomplete="new-password" required="" id="id_password2">
             </div>
             <div class="input-group mb-3">
-                <button type="submit" class="btn btn-primary btn-sm btn-block mt-4">Signup</button>
+                <button type="submit" class="btn btn-primary btn-sm btn-block mt-4">Register</button>
               </div>
-              <a href="/accounts/login/" >Login </a>
+              <p class="text-center"> You already have an account <a href="/accounts/login/" >login </a> here.</p>
             </div>
         </form>
         </div>
