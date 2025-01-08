@@ -1,0 +1,29 @@
+name: Tag on Merge
+
+on:
+  push:
+    branches:
+      - QAT 
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Get Current Date
+      id: date
+      run: echo "tag_date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+    - name: Create Tag
+      env:
+        TAG_DATE: ${{ env.tag_date }}
+      run: |
+        TAG_NAME="backup-qat-${TAG_DATE}"
+        echo "Creating tag: $TAG_NAME"
+        git config --global user.name "pankaj-arcitech"
+        git config --global user.email "pankaj@arcitech.ai"
+        git tag -a $TAG_NAME -m "QAT Backup tag created on ${TAG_DATE}"
+        git push origin $TAG_NAME
