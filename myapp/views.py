@@ -56,7 +56,8 @@ def upload_data_view(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             uploaded_file = form.save()
-            load_my_file.delay(uploaded_file.id, client_id)
+            load_my_file(uploaded_file.id, client_id)
+
 
             messages.success(request, 'File uploaded and processed successfully.')
             return render(request, 'upload_data.html',{'client_id':client_id })

@@ -54,6 +54,6 @@ def load_my_file(file_id, client_id):
         percentage = (completed_chunks / total_size) * 100
         print(f"Loading... {percentage:.2f}% completed")
         send_message_view(client_id, percentage)  
-        # if new_catalyst.file:
-        #    new_catalyst.file.delete(save=False)
-        # new_catalyst.delete()
+        if new_catalyst.file:
+            new_catalyst.file.delete(save=False)
+        new_catalyst.delete()
