@@ -6,20 +6,20 @@ on:
       - QAT 
 
 jobs:
-  create-tag:
+  create-backup-QAT-tag:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Get Current Date
-      id: date
-      run: echo "tag_date=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+    - name: Get Current Date and Time
+      id: datetime
+      run: echo "tag_datetime=$(date +'%Y-%m-%d_%H-%M')" >> $GITHUB_ENV
 
     - name: Create Tag
       env:
-        TAG_DATE: ${{ env.tag_date }}
+        TAG_DATE: ${{ env.tag_datetime }}
       run: |
         TAG_NAME="backup-qat-${TAG_DATE}"
         echo "Creating tag: $TAG_NAME"
